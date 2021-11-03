@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Item Lister</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter&family=Source+Code+Pro&display=swap" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+  </head>
+  <body>
+      <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add a item</h5>
+                <button type="button" id="close_dialog" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="submit_update" class="btn btn-secondary" data-dismiss="modal">Add</button>
+               
+              </div>
+            </div>
+          </div>
+        </div>
+    <div class="container">
+      <div class="card card-body mt-4" style="width: 40em; margin:auto">
+        <h4>Items</h4>
+        <div class="list-group" id="sortable">
+        </div>
+        <form class="form-inline mb-4" id="form">
+        <button class="btn btn-sm btn-secondary" style="margin-top: 20px; text-align: center;">Add</button>
+        </form> 
+      </div>
+
+    </div>
+    <script>
+      $(function () {
+          $("#sortable").sortable();
+      });
+  </script>
+    <script src="script.js"></script>
+    <style>
+      .btn-link {
+        margin-right: 47.5%;
+        width: 5%;
+      }
+    </style>
+  </body>
+</html>
+________________________
+let form = document.querySelector("#form");
+let list = document.querySelector("#sortable");
+let filter = document.querySelector("#filter");
+
+form.addEventListener("submit", addItem);
+list.addEventListener("click", removeItem);
+list.addEventListener("click", updateItem);
+
+
+function addItem(e) {
+  e.preventDefault();
+  let list_items = document.createElement("div");
+  list_items.className = "card";
+  list_items.style = "margin-top: 30px;"
+  let card_header = document.createElement("div");
+  card_header.className = "card-header";
+  let input = document.createElement("input");
+  input.className = "form-control";
+  input.setAttribute("type", "text");
+  input.setAttribute("style", "width: 90%");
+
+  let card_body = document.createElement("div");
+  card_body.className = "card-body";
+  card_body.style = "text-align:center";
+
+  let btn_add = document.createElement("button");
+  btn_add.className = "btn btn-link btn-sm update float-right fa fa-plus";
+  btn_add.style = "margin-left: 30px;"
+
+  let btn = document.createElement("button");
+  btn.className = "btn btn-link btn-sm delete float-right fa fa-trash";
+  btn.style = "margin-right: 5%;"
+  card_body.appendChild(btn_add)
+  card_header.appendChild(input)
+  list_items.appendChild(card_header)
+  list_items.appendChild(card_body)
+  list_items.appendChild(btn)
+  list.appendChild(list_items);
+
+  
+}
+
+function updateItem(e) {
+  var modal = document.getElementById("exampleModal");
+  e.preventDefault();
+  if (e.target.classList.contains("update")) {
+    modal.style.display = "block";
+    item = e.target.parentElement;
+    var text = document.createTextNode("ABC");
+    item.appendChild(text)
+    text.style = "text-align: center;"
+    item.removeChild(e.target)
+    console.log(item)
+  }
+  var span = document.getElementById("close_dialog");
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+}
+function removeItem(e) {
+  console.log(e)
+  e.preventDefault();
+  if (e.target.classList.contains("delete")) {
+    if (confirm("Are you to remove the selected item?")) {
+      let item = e.target.parentElement;
+      list.removeChild(item);
+    }
+  }
+}
+
+function filterItem(e) {
+  let filterValue = e.target.value.toLowerCase();
+  let li = list.getElementsByTagName("li");
+  Array.from(li).forEach(item => {
+    let i = item.firstChild.textContent;
+    console.log(i);
+    if (i.toLowerCase().indexOf(filterValue) != -1)
+      item.style.display = "block";
+    else item.style.display = "none";
+  });
+}
